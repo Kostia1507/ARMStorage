@@ -37,6 +37,13 @@ public class UserEntity {
     @ManyToOne()
     private RoleEntity role;
 
+    @JsonIgnore
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "user_to_storages",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "storage_id"))
+    private Set<ItemEntity> storages;
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
