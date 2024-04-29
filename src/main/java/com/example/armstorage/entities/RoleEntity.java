@@ -16,12 +16,11 @@ import java.util.Set;
 public class RoleEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
+    @Column(name="name")
     private String name;
 
-    private String text;
+    @Column(name="locale")
+    private String locale;
 
     @JsonIgnore
     @OneToMany
