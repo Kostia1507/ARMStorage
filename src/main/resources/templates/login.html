@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Storage ARM</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            width: 300px;
+            text-align: center;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <input type="text" id="login" placeholder="Логін">
+    <input type="password" id="password" placeholder="Пароль">
+    <button onclick="login()">ВХІД</button>
+</div>
+
+<script>
+    function login() {
+        var login = document.getElementById("login").value;
+        var password = document.getElementById("password").value;
+
+        // Тут можна написати логіку для обробки введених даних, наприклад, відправити їх на сервер або перевірити локально
+
+    }
+</script>
+
+</body>
+</html>
