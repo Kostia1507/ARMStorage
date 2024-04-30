@@ -48,6 +48,7 @@ public class SpringSecurityConfig {
                 .userDetailsService(userDetailsService)
                 .addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers("/hello").permitAll()
                         .requestMatchers("/user/**").hasAnyRole("MANAGER", "DRIVER", "ADMIN")
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/manager/**").hasAnyRole("MANAGER", "ADMIN")
