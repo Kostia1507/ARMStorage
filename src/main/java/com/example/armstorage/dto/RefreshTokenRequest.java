@@ -10,6 +10,6 @@ import lombok.NoArgsConstructor;
 @Getter
 public class RefreshTokenRequest {
 
-    @NotNull(message = "should not be null")
+    @NotNull(message = "should be not null")
     private String oldRefreshToken;
 }

@@ -42,7 +42,7 @@ public class UserEntity {
     @JoinTable(name = "user_to_storages",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "storage_id"))
-    private Set<ItemEntity> storages;
+    private Set<StorageEntity> storages;
 
     @Override
     public boolean equals(Object o) {

@@ -12,10 +12,10 @@ import lombok.ToString;
 @ToString
 public class UserLoginRequest {
 
-    @NotBlank(message = "should not be blank")
+    @NotBlank(message = "should be not blank")
     private String login;
 
-    @NotBlank(message = "should not be blank")
+    @NotBlank(message = "should be not blank")
     private String password;
 
 }
