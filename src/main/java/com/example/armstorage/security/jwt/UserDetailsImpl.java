@@ -16,7 +16,7 @@ import java.util.Collections;
 public class UserDetailsImpl implements UserDetails {
 
     private final Long id;
-    private final String phoneNumber;
+    private final String login;
     private final String password;
     private final RoleEntity role;
 
@@ -41,7 +41,7 @@ public class UserDetailsImpl implements UserDetails {
 
     @Override
     public String getUsername() {
-        return phoneNumber;
+        return login;
     }
 
     @Override

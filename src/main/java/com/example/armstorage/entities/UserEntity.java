@@ -33,8 +33,8 @@ public class UserEntity {
     @Column(name = "fullname")
     private String fullname;
 
-    @JsonIgnore
     @ManyToOne()
+    @JoinColumn(name = "role", referencedColumnName = "name")
     private RoleEntity role;
 
     @JsonIgnore
