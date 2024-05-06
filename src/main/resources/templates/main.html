@@ -1,10 +1,78 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Hello there</title>
+    <style>
+        body{
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            position: fixed;
+            width: 100%;
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+        }
+
+        .column-container {
+            display: flex;
+            height: 100%;
+            width: 100%;
+        }
+
+        .left-column {
+            width: 25%;
+            height: 100%;
+            background-color: #f0f0f0;
+        }
+
+        .right-column {
+            border-left: 5px solid #cccccc;
+            width: 75%;
+            height: 100%;
+        }
+
+        .top-row {
+            border-bottom: 5px solid #cccccc;
+            height: 15%;
+        }
+
+        .fullname {
+            font-family: Arial, sans-serif;
+            margin: 0
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+    <title>Storage ARM</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 </head>
 <body>
-<p th:text="|Hi, your token is ${session.token}!|" />
+    <div class="column-container">
+        <div class="left-column" , id="left-column">
+            <div class="top-row" , id="left-tow-row">
+                <p class="fullname" th:text="|${session.fullname}|"></p>
+            </div>
+        </div>
+        <div class="right-column" , id="right-column">
+            <div class="top-row" , id="right-tow-row">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Тут відбувається загрузка всіх даних, і це прекрасно
+    </script>
 </body>
 </html>

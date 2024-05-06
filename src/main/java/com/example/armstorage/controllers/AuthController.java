@@ -1,6 +1,7 @@
 package com.example.armstorage.controllers;
 
 import com.example.armstorage.dto.UserLoginRequest;
+import com.example.armstorage.entities.UserEntity;
 import com.example.armstorage.exceptions.InvalidRequestDataException;
 import com.example.armstorage.exceptions.UserNotFoundException;
 import com.example.armstorage.services.UserService;
@@ -28,6 +29,8 @@ public class AuthController {
         try{
             Map<String, String> responseBody = new HashMap<>(userService.login(request));
             session.setAttribute("token", responseBody.get("accessToken"));
+            UserEntity user = userService.findUserByLogin(request.getLogin());
+            session.setAttribute("fullname", user.getFullname());
             return true;
         }catch(InvalidRequestDataException | UserNotFoundException e){
             return false;
