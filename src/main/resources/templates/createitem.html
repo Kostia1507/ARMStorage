@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Storage ARM</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            width: 300px;
+            text-align: center;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+        }
+
+        select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <p id="access-token" hidden="hidden" , th:text="|${session.token}|"></p>
+    <select name="select" , id="select_category"></select>
+    <input type="text" id="name" placeholder="Назва товару">
+    <input type="text" id="measurement" placeholder="Вимір">
+    <input type="number" id="price" placeholder="Ціна">
+    <button onclick="createItem()">СТВОРИТИ</button>
+</div>
+
+<script>
+    const token = document.getElementById("access-token").textContent
+    const xhr = new XMLHttpRequest();
+    xhr.open("GET", "/storage/category/all");
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.setRequestHeader("Authorization", `Bearer ${token}`);
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+            const selector = document.getElementById("select_category")
+            const responseArray = JSON.parse(xhr.response);
+            responseArray.forEach(function(category) {
+                let option = document.createElement("option");
+                option.text = category.name;
+                option.value = category.id;
+                selector.add(option);
+            });
+
+        }
+    };
+    xhr.send();
+
+    function createItem() {
+        const category_id = document.getElementById("select_category").value;
+        const name = document.getElementById("name").value;
+        const measurement = document.getElementById("measurement").value;
+        const price = document.getElementById("price").value;
+
+        const data = {
+            "categoryId": category_id,
+            "name": name,
+            "measurement": measurement,
+            "price": parseFloat(price)
+        };
+
+        const xhr = new XMLHttpRequest();
+        xhr.open("POST", "/storage/item/create");
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.setRequestHeader("Authorization", `Bearer ${token}`);
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4) {
+                if (xhr.status === 200) {
+                    window.location.href = "/main";
+                } else {
+                    alert("Дані введено не коректно!");
+                }
+            }
+        };
+        xhr.send(JSON.stringify(data));
+    }
+</script>
+
+</body>
+</html>

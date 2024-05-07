@@ -1,5 +1,6 @@
 package com.example.armstorage.services.impl;
 
+import com.example.armstorage.dto.CreateItemRequest;
 import com.example.armstorage.entities.CategoryEntity;
 import com.example.armstorage.entities.ItemEntity;
 import com.example.armstorage.entities.StorageEntity;
@@ -13,6 +14,8 @@ import com.example.armstorage.repositories.StorageRepository;
 import com.example.armstorage.services.StorageService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Slf4j
 @Service
@@ -49,6 +52,23 @@ public class StorageServiceImpl implements StorageService {
     public CategoryEntity createCategory(String name){
         CategoryEntity category = CategoryEntity.builder().name(name).build();
         return categoriesRepository.save(category);
+    }
+
+    @Override
+    public List<CategoryEntity> getAllCategories(){
+        return categoriesRepository.findAll();
+    }
+
+    @Override
+    public ItemEntity createItem(CreateItemRequest request) throws CategoryNotFoundException {
+        CategoryEntity category = getCategoryById(request.getCategoryId());
+        ItemEntity item = ItemEntity.builder()
+                .category(category)
+                .name(request.getName())
+                .measurement(request.getMeasurement())
+                .price(request.getPrice()).build();
+        itemRepository.save(item);
+        return item;
     }
 
 
