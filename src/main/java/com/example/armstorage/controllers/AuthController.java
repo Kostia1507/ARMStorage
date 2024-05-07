@@ -30,6 +30,8 @@ public class AuthController {
             Map<String, String> responseBody = new HashMap<>(userService.login(request));
             session.setAttribute("token", responseBody.get("accessToken"));
             UserEntity user = userService.findUserByLogin(request.getLogin());
+            session.setAttribute("role", user.getRole().getName());
+            session.setAttribute("roleLocale", user.getRole().getLocale());
             session.setAttribute("fullname", user.getFullname());
             return true;
         }catch(InvalidRequestDataException | UserNotFoundException e){

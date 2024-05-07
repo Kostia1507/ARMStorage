@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ARM Admin Panel</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            width: 300px;
+            text-align: center;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <button onclick="returnToMain()">Повернутись до АРМ</button>
+    <br/>
+    <button onclick="createCategory()">Створити категорію</button>
+    <button onclick="createItem()">Створити предмет</button>
+</div>
+
+<script>
+
+    function returnToMain(){
+        window.location.href = "/main";
+    }
+    function createCategory(){
+
+    }
+
+    function createItem(){
+        window.location.href = "/createitem";
+    }
+
+
+</script>
+
+</body>
+</html>

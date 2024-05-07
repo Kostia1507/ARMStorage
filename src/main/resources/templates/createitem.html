@@ -95,7 +95,7 @@
         xhr.onreadystatechange = function () {
             if (xhr.readyState === 4) {
                 if (xhr.status === 200) {
-                    window.location.href = "/main";
+                    window.location.href = "/adminpage";
                 } else {
                     alert("Дані введено не коректно!");
                 }
@@ -104,6 +104,5 @@
         xhr.send(JSON.stringify(data));
     }
 </script>
-
 </body>
 </html>

@@ -35,8 +35,20 @@
             height: 15%;
         }
 
+        .left-top-row {
+            border-bottom: 5px solid #cccccc;
+            height: 15%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
         .fullname {
+            width:100%;
+            text-align: center;
             font-family: Arial, sans-serif;
+            font-size: 3vh;
             margin: 0
         }
 
@@ -59,10 +71,13 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 </head>
 <body>
+    <p id="role" hidden="hidden" th:text="|${session.role}|"></p>
+    <p id="token" hidden="hidden" th:text="|${session.token}|"></p>
     <div class="column-container">
         <div class="left-column" , id="left-column">
-            <div class="top-row" , id="left-tow-row">
+            <div class="left-top-row" , id="left-top-row">
                 <p class="fullname" th:text="|${session.fullname}|"></p>
+                <p class="fullname" th:text="|${session.roleLocale}|"></p>
             </div>
         </div>
         <div class="right-column" , id="right-column">
@@ -72,7 +87,20 @@
     </div>
 
     <script>
-        // Тут відбувається загрузка всіх даних, і це прекрасно
+
+        const token = document.getElementById("token").textContent;
+        const userRole = document.getElementById("role").textContent;
+
+        if(userRole === "ROLE_ADMIN"){
+            let button = document.createElement("button");
+            button.textContent = "Адмін панель";
+            button.onclick = openAdminPage;
+            const div = document.getElementById("left-top-row");
+            div.appendChild(button);
+        }
+        function openAdminPage(){
+            window.location.href = "/adminpage";
+        }
     </script>
 </body>
 </html>
