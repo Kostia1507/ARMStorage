@@ -1,6 +1,7 @@
 package com.example.armstorage.services;
 
 import com.example.armstorage.dto.CreateItemRequest;
+import com.example.armstorage.dto.CreateStorageRequest;
 import com.example.armstorage.entities.CategoryEntity;
 import com.example.armstorage.entities.ItemEntity;
 import com.example.armstorage.entities.StorageEntity;
@@ -22,4 +23,6 @@ public interface StorageService {
     List<CategoryEntity> getAllCategories();
 
     ItemEntity createItem(CreateItemRequest request) throws CategoryNotFoundException;
+
+    StorageEntity createStorage(CreateStorageRequest request);
 }

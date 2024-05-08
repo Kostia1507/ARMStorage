@@ -1,9 +1,11 @@
 package com.example.armstorage.controllers;
 
 import com.example.armstorage.dto.CreateItemRequest;
+import com.example.armstorage.dto.CreateStorageRequest;
 import com.example.armstorage.dto.UserLoginRequest;
 import com.example.armstorage.entities.CategoryEntity;
 import com.example.armstorage.entities.ItemEntity;
+import com.example.armstorage.entities.StorageEntity;
 import com.example.armstorage.exceptions.CategoryNotFoundException;
 import com.example.armstorage.exceptions.InvalidRequestDataException;
 import com.example.armstorage.exceptions.UserNotFoundException;
@@ -60,4 +62,8 @@ public class StorageController {
         }
     }
 
+    @PostMapping("/create-storage")
+    public ResponseEntity<StorageEntity> createStorage(@RequestBody CreateStorageRequest request){
+        return ResponseEntity.ok().body(storageService.createStorage(request));
+    }
 }

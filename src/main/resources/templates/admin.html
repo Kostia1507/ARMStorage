@@ -28,6 +28,7 @@
         }
 
         button {
+            width: 100%;
             padding: 10px 20px;
             background-color: #007bff;
             color: #fff;
@@ -40,9 +41,10 @@
 
 <div class="container">
     <button onclick="returnToMain()">Повернутись до АРМ</button>
-    <br/>
+    <br><br>
     <button onclick="createCategory()">Створити категорію</button>
     <button onclick="createItem()">Створити предмет</button>
+    <button onclick="createStorage()">Створити склад</button>
 </div>
 
 <script>
@@ -51,11 +53,15 @@
         window.location.href = "/main";
     }
     function createCategory(){
-
+        window.location.href = "/createcategory";
     }
 
     function createItem(){
         window.location.href = "/createitem";
+    }
+
+    function createStorage(){
+        window.location.href = "/createstorage";
     }
 
 

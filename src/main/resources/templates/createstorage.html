@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Storage ARM</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            width: 300px;
+            text-align: center;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+        }
+
+        select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <p id="access-token" hidden="hidden" , th:text="|${session.token}|"></p>
+    <input type="text" id="name" placeholder="Назва товару">
+    <input type="number" id="cell_number" value="1" placeholder="Кількість комірок">
+    <button onclick="createStorage()">СТВОРИТИ</button>
+</div>
+
+<script>
+    const token = document.getElementById("access-token").textContent
+
+    function createStorage() {
+        const name = document.getElementById("name").value;
+        const cell_number = parseInt(document.getElementById("cell_number").value);
+
+        const data = {
+            "name": name,
+            "cellNumber": cell_number,
+        };
+
+        const xhr = new XMLHttpRequest();
+        xhr.open("POST", "/storage/create-storage");
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.setRequestHeader("Authorization", `Bearer ${token}`);
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4) {
+                if (xhr.status === 200) {
+                    window.location.href = "/adminpage";
+                } else {
+                    alert("Дані введено не коректно!");
+                }
+            }
+        };
+        xhr.send(JSON.stringify(data));
+    }
+</script>
+</body>
+</html>

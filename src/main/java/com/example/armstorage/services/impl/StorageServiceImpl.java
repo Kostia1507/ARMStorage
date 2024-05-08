@@ -1,6 +1,7 @@
 package com.example.armstorage.services.impl;
 
 import com.example.armstorage.dto.CreateItemRequest;
+import com.example.armstorage.dto.CreateStorageRequest;
 import com.example.armstorage.entities.CategoryEntity;
 import com.example.armstorage.entities.ItemEntity;
 import com.example.armstorage.entities.StorageEntity;
@@ -69,6 +70,15 @@ public class StorageServiceImpl implements StorageService {
                 .price(request.getPrice()).build();
         itemRepository.save(item);
         return item;
+    }
+
+    @Override
+    public StorageEntity createStorage(CreateStorageRequest request){
+        StorageEntity storageEntity = StorageEntity.builder()
+                .name(request.getName())
+                .cell_numbers(request.getCellNumber()).build();
+        storageRepository.save(storageEntity);
+        return storageEntity;
     }
 
 

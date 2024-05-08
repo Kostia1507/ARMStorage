@@ -23,6 +23,18 @@ public class MVCController {
         return "createitem";
     }
 
+    @GetMapping("/createcategory")
+    public String createCategoryPage(Model model, HttpSession session){
+        model.addAttribute(session.getAttribute("token"));
+        return "createcategory";
+    }
+
+    @GetMapping("/createstorage")
+    public String createStoragePage(Model model, HttpSession session){
+        model.addAttribute(session.getAttribute("token"));
+        return "createstorage";
+    }
+
     @GetMapping("/adminpage")
     public String adminPage(Model model, HttpSession session){
         model.addAttribute(session.getAttribute("token"));
