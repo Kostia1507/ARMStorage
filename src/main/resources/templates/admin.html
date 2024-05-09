@@ -41,10 +41,11 @@
 
 <div class="container">
     <button onclick="returnToMain()">Повернутись до АРМ</button>
-    <br><br>
+    <br/><br/>
     <button onclick="createCategory()">Створити категорію</button>
     <button onclick="createItem()">Створити предмет</button>
     <button onclick="createStorage()">Створити склад</button>
+    <button onclick="createUser()">Зареєструвати користувача</button>
 </div>
 
 <script>
@@ -62,6 +63,10 @@
 
     function createStorage(){
         window.location.href = "/createstorage";
+    }
+
+    function createUser(){
+        window.location.href = "/reguser";
     }
 
 

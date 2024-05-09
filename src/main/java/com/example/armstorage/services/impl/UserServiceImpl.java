@@ -1,6 +1,8 @@
 package com.example.armstorage.services.impl;
 
+import com.example.armstorage.dto.CreateUserRequest;
 import com.example.armstorage.dto.UserLoginRequest;
+import com.example.armstorage.entities.RoleEntity;
 import com.example.armstorage.entities.UserEntity;
 import com.example.armstorage.exceptions.InvalidRequestDataException;
 import com.example.armstorage.exceptions.UserNotFoundException;
@@ -15,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import static com.example.armstorage.security.jwt.JWTType.ACCESS;
 import static com.example.armstorage.security.jwt.JWTType.REFRESH;
@@ -101,5 +104,31 @@ public class UserServiceImpl implements UserService {
                 "refreshToken", refreshToken,
                 "refreshTokenExpiration", refreshExpiration.substring(0, refreshExpiration.indexOf("["))
         );
+    }
+
+    @Override
+    public List<RoleEntity> getAllRoles(){
+        return roleRepository.findAll();
+    }
+
+    @Override
+    public UserEntity register(CreateUserRequest request) throws InvalidRequestDataException {
+        log.info("register()");
+        Optional<UserEntity> user = userRepository.findUserEntityByLogin(request.getLogin());
+        if (user.isPresent()){
+            throw new InvalidRequestDataException("Such login already exists");
+        }
+
+        RoleEntity role = roleRepository.findRoleEntityByName(request.getRole()).orElseThrow(
+                () -> new InvalidRequestDataException("role not found"));
+
+        UserEntity userEntity = UserEntity.builder()
+                .login(request.getLogin())
+                .password(passwordEncoder.encode(request.getPassword()))
+                .fullname(request.getFullname())
+                .role(role)
+                .build();
+        userRepository.save(userEntity);
+        return userEntity;
     }
 }

@@ -40,4 +40,10 @@ public class MVCController {
         model.addAttribute(session.getAttribute("token"));
         return "admin";
     }
+
+    @GetMapping("/reguser")
+    public String regUserPage(Model model, HttpSession session){
+        model.addAttribute(session.getAttribute("token"));
+        return "reguser";
+    }
 }

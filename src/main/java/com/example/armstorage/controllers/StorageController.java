@@ -34,11 +34,6 @@ public class StorageController {
         this.storageService = storageService;
     }
 
-    @GetMapping("/category/create/{name}")
-    public ResponseEntity<CategoryEntity> createCategory(@PathVariable String name){
-        return ResponseEntity.ok().body(storageService.createCategory(name));
-    }
-
     @GetMapping("/category/{id}")
     public ResponseEntity<CategoryEntity> getCategory(@PathVariable Long id){
         try {
@@ -53,17 +48,4 @@ public class StorageController {
         return storageService.getAllCategories();
     }
 
-    @PostMapping("/item/create")
-    public ResponseEntity<ItemEntity> createItem(@RequestBody CreateItemRequest request){
-        try{
-            return ResponseEntity.ok().body(storageService.createItem(request));
-        }catch(CategoryNotFoundException e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ItemEntity());
-        }
-    }
-
-    @PostMapping("/create-storage")
-    public ResponseEntity<StorageEntity> createStorage(@RequestBody CreateStorageRequest request){
-        return ResponseEntity.ok().body(storageService.createStorage(request));
-    }
 }

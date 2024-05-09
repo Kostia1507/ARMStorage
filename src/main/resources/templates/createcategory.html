@@ -57,7 +57,7 @@
     function createCategory() {
         const name = document.getElementById("name").value;
         const xhr = new XMLHttpRequest();
-        xhr.open("GET", `/storage/category/create/${name}`);
+        xhr.open("GET", `/admin/category/create/${name}`);
         xhr.setRequestHeader("Content-Type", "application/json");
         xhr.setRequestHeader("Authorization", `Bearer ${token}`);
         xhr.onreadystatechange = function () {

@@ -65,7 +65,7 @@
         };
 
         const xhr = new XMLHttpRequest();
-        xhr.open("POST", "/storage/create-storage");
+        xhr.open("POST", "/admin/create-storage");
         xhr.setRequestHeader("Content-Type", "application/json");
         xhr.setRequestHeader("Authorization", `Bearer ${token}`);
         xhr.onreadystatechange = function () {
