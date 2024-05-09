@@ -1,25 +1,17 @@
 package com.example.armstorage.controllers;
 
-import com.example.armstorage.dto.CreateItemRequest;
-import com.example.armstorage.dto.CreateStorageRequest;
-import com.example.armstorage.dto.UserLoginRequest;
 import com.example.armstorage.entities.CategoryEntity;
 import com.example.armstorage.entities.ItemEntity;
-import com.example.armstorage.entities.StorageEntity;
 import com.example.armstorage.exceptions.CategoryNotFoundException;
-import com.example.armstorage.exceptions.InvalidRequestDataException;
-import com.example.armstorage.exceptions.UserNotFoundException;
+import com.example.armstorage.exceptions.ItemNotFoundException;
 import com.example.armstorage.services.StorageService;
 import com.example.armstorage.services.UserService;
-import jakarta.servlet.http.HttpSession;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 
 @RestController
@@ -43,9 +35,23 @@ public class StorageController {
         }
     }
 
+    @GetMapping("/item/{id}")
+    public ResponseEntity<ItemEntity> getItem(@PathVariable Long id){
+        try {
+            return ResponseEntity.ok().body(storageService.getItemById(id));
+        }catch(ItemNotFoundException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ItemEntity());
+        }
+    }
+
     @GetMapping("/category/all")
     public List<CategoryEntity> getAllCategories(){
         return storageService.getAllCategories();
+    }
+
+    @GetMapping("/items/all")
+    public List<ItemEntity> getAllItems(){
+        return storageService.getAllItems();
     }
 
 }

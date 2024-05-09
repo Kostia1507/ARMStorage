@@ -2,6 +2,7 @@ package com.example.armstorage.services.impl;
 
 import com.example.armstorage.dto.CreateItemRequest;
 import com.example.armstorage.dto.CreateStorageRequest;
+import com.example.armstorage.dto.EditItemRequest;
 import com.example.armstorage.dto.EditUserInStorageRequest;
 import com.example.armstorage.entities.CategoryEntity;
 import com.example.armstorage.entities.ItemEntity;
@@ -64,6 +65,11 @@ public class StorageServiceImpl implements StorageService {
     }
 
     @Override
+    public List<ItemEntity> getAllItems(){
+        return itemRepository.findAll();
+    }
+
+    @Override
     public ItemEntity createItem(CreateItemRequest request) throws CategoryNotFoundException {
         CategoryEntity category = getCategoryById(request.getCategoryId());
         ItemEntity item = ItemEntity.builder()
@@ -72,6 +78,20 @@ public class StorageServiceImpl implements StorageService {
                 .measurement(request.getMeasurement())
                 .price(request.getPrice()).build();
         itemRepository.save(item);
+        return item;
+    }
+
+    @Override
+    public ItemEntity editItem(EditItemRequest request) throws ItemNotFoundException, CategoryNotFoundException {
+        CategoryEntity category = getCategoryById(request.getCategoryId());
+        ItemEntity item = getItemById(request.getItemId());
+        System.out.println("id " + item.getId());
+        item.setCategory(category);
+        item.setPrice(request.getPrice());
+        item.setName(request.getName());
+        item.setMeasurement(request.getMeasurement());
+        itemRepository.save(item);
+        System.out.println("id " + item.getId());
         return item;
     }
 

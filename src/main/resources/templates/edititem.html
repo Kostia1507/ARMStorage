@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Storage ARM</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            width: 300px;
+            text-align: center;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+        }
+
+        select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover{
+            background-color: #006bff;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <p id="access-token" hidden="hidden" , th:text="|${session.token}|"></p>
+    <select name="select" , id="select_item"></select>
+    <input type="text" id="name" placeholder="Назва товару">
+    <input type="text" id="measurement" placeholder="Вимір">
+    <input type="number" id="price" placeholder="Ціна">
+    <select name="select" , id="select_category"></select>
+    <button onclick="editItem()">ЗМІНИТИ</button>
+</div>
+
+<script>
+    const token = document.getElementById("access-token").textContent
+    const xhr = new XMLHttpRequest();
+
+    const itemSelector = document.getElementById("select_item")
+    const selector = document.getElementById("select_category")
+
+    xhr.open("GET", "/storage/items/all");
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.setRequestHeader("Authorization", `Bearer ${token}`);
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+            const responseArray = JSON.parse(xhr.response);
+            responseArray.forEach(function(category) {
+                let option = document.createElement("option");
+                option.text = category.name;
+                option.value = category.id;
+                itemSelector.add(option);
+            });
+
+        }
+    };
+    xhr.send();
+
+    itemSelector.addEventListener("change", function() {
+        const selectedValue = itemSelector.value;
+        let itemEntity = null
+        const xhrItem = new XMLHttpRequest();
+        xhrItem.open("GET", "/storage/item/"+selectedValue);
+        xhrItem.setRequestHeader("Content-Type", "application/json");
+        xhrItem.setRequestHeader("Authorization", `Bearer ${token}`);
+        xhrItem.onreadystatechange = function () {
+            if (xhrItem.readyState === 4 && xhrItem.status === 200) {
+                itemEntity = JSON.parse(xhrItem.response);
+                document.getElementById("name").value = itemEntity.name;
+                document.getElementById("measurement").value = itemEntity.measurement;
+                document.getElementById("price").value = itemEntity.price;
+                let options = selector.options;
+                for (let i = 0; i < options.length; i++) {
+                    if (parseInt(options[i].value) === itemEntity.category.id) {
+                        options[i].selected = true;
+                        break;
+                    }
+                }
+            }
+        };
+        xhrItem.send();
+    });
+
+    const xhr2 = new XMLHttpRequest();
+    xhr2.open("GET", "/storage/category/all");
+    xhr2.setRequestHeader("Content-Type", "application/json");
+    xhr2.setRequestHeader("Authorization", `Bearer ${token}`);
+    xhr2.onreadystatechange = function () {
+        if (xhr2.readyState === 4 && xhr2.status === 200) {
+            const responseArray = JSON.parse(xhr2.response);
+            responseArray.forEach(function(category) {
+                let option = document.createElement("option");
+                option.text = category.name;
+                option.value = category.id;
+                selector.add(option);
+            });
+
+        }
+    };
+    xhr2.send();
+
+    function editItem() {
+        const itemId = parseInt(document.getElementById("select_item").value);
+        const category_id = document.getElementById("select_category").value;
+        const name = document.getElementById("name").value;
+        const measurement = document.getElementById("measurement").value;
+        const price = document.getElementById("price").value;
+
+        const data = {
+            "itemId": itemId,
+            "categoryId": category_id,
+            "name": name,
+            "measurement": measurement,
+            "price": parseFloat(price)
+        };
+
+        const xhr = new XMLHttpRequest();
+        xhr.open("POST", "/admin/item/edit");
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.setRequestHeader("Authorization", `Bearer ${token}`);
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4) {
+                if (xhr.status === 200) {
+                    window.location.href = "/adminpage";
+                } else {
+                    alert("Дані введено не коректно!");
+                }
+            }
+        };
+        xhr.send(JSON.stringify(data));
+    }
+</script>
+</body>
+</html>

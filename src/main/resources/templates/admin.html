@@ -56,6 +56,7 @@
     <br/><br/>
     <button onclick="createCategory()">Створити категорію</button>
     <button onclick="createItem()">Створити предмет</button>
+    <button onclick="editItem()">Редагувати предмет</button>
     <button onclick="createStorage()">Створити склад</button>
     <button onclick="createUser()">Зареєструвати користувача</button>
     <br/><br/>
@@ -93,6 +94,10 @@
 
     function createItem(){
         window.location.href = "/createitem";
+    }
+
+    function editItem(){
+        window.location.href = "/edititem";
     }
 
     function createStorage(){

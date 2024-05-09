@@ -24,6 +24,12 @@ public class MVCController {
         return "createitem";
     }
 
+    @GetMapping("/edititem")
+    public String editItemPage(Model model, HttpSession session){
+        model.addAttribute("token", session.getAttribute("token"));
+        return "edititem";
+    }
+
     @GetMapping("/createcategory")
     public String createCategoryPage(Model model, HttpSession session){
         model.addAttribute("token", session.getAttribute("token"));

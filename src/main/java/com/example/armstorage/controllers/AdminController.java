@@ -1,17 +1,11 @@
 package com.example.armstorage.controllers;
 
-import com.example.armstorage.dto.CreateItemRequest;
-import com.example.armstorage.dto.CreateStorageRequest;
-import com.example.armstorage.dto.CreateUserRequest;
-import com.example.armstorage.dto.EditUserInStorageRequest;
+import com.example.armstorage.dto.*;
 import com.example.armstorage.entities.CategoryEntity;
 import com.example.armstorage.entities.ItemEntity;
 import com.example.armstorage.entities.StorageEntity;
 import com.example.armstorage.entities.UserEntity;
-import com.example.armstorage.exceptions.CategoryNotFoundException;
-import com.example.armstorage.exceptions.InvalidRequestDataException;
-import com.example.armstorage.exceptions.StorageNotFoundException;
-import com.example.armstorage.exceptions.UserNotFoundException;
+import com.example.armstorage.exceptions.*;
 import com.example.armstorage.services.StorageService;
 import com.example.armstorage.services.UserService;
 import org.springframework.http.HttpStatus;
@@ -53,6 +47,14 @@ public class AdminController {
         try{
             return ResponseEntity.ok().body(storageService.createItem(request));
         }catch(CategoryNotFoundException e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ItemEntity());
+        }
+    }
+    @PostMapping("/item/edit")
+    public ResponseEntity<ItemEntity> editItem(@RequestBody EditItemRequest request){
+        try{
+            return ResponseEntity.ok().body(storageService.editItem(request));
+        }catch(ItemNotFoundException | CategoryNotFoundException e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ItemEntity());
         }
     }

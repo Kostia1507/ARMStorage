@@ -1,10 +1,7 @@
 package com.example.armstorage.entities;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 
@@ -12,6 +9,7 @@ import java.util.List;
 @Entity
 @Table(name = "items")
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
