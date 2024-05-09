@@ -51,49 +51,21 @@
 
 <div class="container">
     <p id="access-token" hidden="hidden" , th:text="|${session.token}|"></p>
-    <select name="select" , id="select_category"></select>
-    <input type="text" id="name" placeholder="Назва товару">
-    <input type="text" id="measurement" placeholder="Вимір">
-    <input type="number" id="price" placeholder="Ціна">
-    <button onclick="createItem()">СТВОРИТИ</button>
+    <p id="user-id" hidden="hidden" , th:text="|${userId}|"></p>
+
+
+    <input type="text" id="name" placeholder="Назва категорії">
+    <button onclick="createCategory()">СТВОРИТИ</button>
 </div>
 
 <script>
     const token = document.getElementById("access-token").textContent
-    const xhr = new XMLHttpRequest();
-    xhr.open("GET", "/storage/category/all");
-    xhr.setRequestHeader("Content-Type", "application/json");
-    xhr.setRequestHeader("Authorization", `Bearer ${token}`);
-    xhr.onreadystatechange = function () {
-        if (xhr.readyState === 4 && xhr.status === 200) {
-            const selector = document.getElementById("select_category")
-            const responseArray = JSON.parse(xhr.response);
-            responseArray.forEach(function(category) {
-                let option = document.createElement("option");
-                option.text = category.name;
-                option.value = category.id;
-                selector.add(option);
-            });
+    const userId = document.getElementById("user-id").textContent
 
-        }
-    };
-    xhr.send();
-
-    function createItem() {
-        const category_id = document.getElementById("select_category").value;
+    function createCategory() {
         const name = document.getElementById("name").value;
-        const measurement = document.getElementById("measurement").value;
-        const price = document.getElementById("price").value;
-
-        const data = {
-            "categoryId": category_id,
-            "name": name,
-            "measurement": measurement,
-            "price": parseFloat(price)
-        };
-
         const xhr = new XMLHttpRequest();
-        xhr.open("POST", "/admin/item/create");
+        xhr.open("GET", `/admin/category/create/${name}`);
         xhr.setRequestHeader("Content-Type", "application/json");
         xhr.setRequestHeader("Authorization", `Bearer ${token}`);
         xhr.onreadystatechange = function () {
@@ -105,7 +77,7 @@
                 }
             }
         };
-        xhr.send(JSON.stringify(data));
+        xhr.send();
     }
 </script>
 </body>

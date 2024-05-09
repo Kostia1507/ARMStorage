@@ -41,13 +41,17 @@
             border: none;
             cursor: pointer;
         }
+
+        button:hover{
+            background-color: #006bff;
+        }
     </style>
 </head>
 <body>
 
 <div class="container">
     <p id="access-token" hidden="hidden" , th:text="|${session.token}|"></p>
-    <input type="text" id="name" placeholder="Назва товару">
+    <input type="text" id="name" placeholder="Назва категорії">
     <button onclick="createCategory()">СТВОРИТИ</button>
 </div>
 

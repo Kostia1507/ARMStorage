@@ -3,19 +3,26 @@ package com.example.armstorage.controllers;
 import com.example.armstorage.dto.CreateItemRequest;
 import com.example.armstorage.dto.CreateStorageRequest;
 import com.example.armstorage.dto.CreateUserRequest;
+import com.example.armstorage.dto.EditUserInStorageRequest;
 import com.example.armstorage.entities.CategoryEntity;
 import com.example.armstorage.entities.ItemEntity;
 import com.example.armstorage.entities.StorageEntity;
 import com.example.armstorage.entities.UserEntity;
 import com.example.armstorage.exceptions.CategoryNotFoundException;
 import com.example.armstorage.exceptions.InvalidRequestDataException;
+import com.example.armstorage.exceptions.StorageNotFoundException;
+import com.example.armstorage.exceptions.UserNotFoundException;
 import com.example.armstorage.services.StorageService;
 import com.example.armstorage.services.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@RestController("/admin")
+import java.util.List;
+import java.util.Set;
+
+@RestController
+@RequestMapping("/admin")
 public class AdminController {
 
     private final UserService userService;
@@ -53,5 +60,40 @@ public class AdminController {
     @PostMapping("/create-storage")
     public ResponseEntity<StorageEntity> createStorage(@RequestBody CreateStorageRequest request){
         return ResponseEntity.ok().body(storageService.createStorage(request));
+    }
+
+    @GetMapping("/users/all")
+    public List<UserEntity> getAllUsers (){
+        return userService.getAllUsers();
+    }
+
+    @GetMapping("/storages/all")
+    public List<StorageEntity> getAllStorages (){
+        return storageService.getAllStorages();
+    }
+
+    @GetMapping("/storages/user/{userId}")
+    public Set<StorageEntity> getAllStorages (@PathVariable Long userId){
+        return storageService.getAllUserStorages(userId);
+    }
+
+    @PostMapping("/storages/add-user")
+    public ResponseEntity<String> addUserToStorage (@RequestBody EditUserInStorageRequest request){
+        try{
+            boolean returnStatus = storageService.editUserInStorage(request, true);
+            return ResponseEntity.ok("success");
+        }catch(UserNotFoundException | StorageNotFoundException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/storages/remove-user")
+    public ResponseEntity<String> removeUserFromStorage (@RequestBody EditUserInStorageRequest request){
+        try{
+            boolean returnStatus = storageService.editUserInStorage(request, false);
+            return ResponseEntity.ok("success");
+        }catch(UserNotFoundException | StorageNotFoundException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
     }
 }

@@ -27,6 +27,13 @@
             box-sizing: border-box;
         }
 
+        select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+        }
+
         button {
             width: 100%;
             padding: 10px 20px;
@@ -35,20 +42,47 @@
             border: none;
             cursor: pointer;
         }
+
+        button:hover{
+            background-color: #006bff;
+        }
     </style>
 </head>
 <body>
 
 <div class="container">
+    <p id="access-token" hidden="hidden" , th:text="|${session.token}|"></p>
     <button onclick="returnToMain()">Повернутись до АРМ</button>
     <br/><br/>
     <button onclick="createCategory()">Створити категорію</button>
     <button onclick="createItem()">Створити предмет</button>
     <button onclick="createStorage()">Створити склад</button>
     <button onclick="createUser()">Зареєструвати користувача</button>
+    <br/><br/>
+    <select name="select" , id="select_user"></select>
+    <button onclick="editUser()">Редагувати користувача</button>
 </div>
 
 <script>
+    const token = document.getElementById("access-token").textContent
+    const xhr = new XMLHttpRequest();
+    xhr.open("GET", "/admin/users/all");
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.setRequestHeader("Authorization", `Bearer ${token}`);
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+            const selector = document.getElementById("select_user")
+            const responseArray = JSON.parse(xhr.response);
+            responseArray.forEach(function(user) {
+                let option = document.createElement("option");
+                option.text = user.fullname;
+                option.value = user.id;
+                selector.add(option);
+            });
+
+        }
+    };
+    xhr.send();
 
     function returnToMain(){
         window.location.href = "/main";
@@ -67,6 +101,11 @@
 
     function createUser(){
         window.location.href = "/reguser";
+    }
+
+    function editUser(){
+
+        window.location.href = "/edit-user/ " + document.getElementById("select_user").value;
     }
 
 
