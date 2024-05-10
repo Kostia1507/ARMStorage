@@ -98,4 +98,13 @@ public class AdminController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
+
+    @PostMapping("/user/edit")
+    public ResponseEntity<UserEntity> editUser(@RequestBody EditUserRequest request){
+        try{
+            return ResponseEntity.ok().body(userService.editUser(request));
+        }catch(UserNotFoundException | RoleNotFoundException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new UserEntity());
+        }
+    }
 }

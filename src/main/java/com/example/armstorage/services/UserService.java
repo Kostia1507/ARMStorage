@@ -1,10 +1,12 @@
 package com.example.armstorage.services;
 
 import com.example.armstorage.dto.CreateUserRequest;
+import com.example.armstorage.dto.EditUserRequest;
 import com.example.armstorage.dto.UserLoginRequest;
 import com.example.armstorage.entities.RoleEntity;
 import com.example.armstorage.entities.UserEntity;
 import com.example.armstorage.exceptions.InvalidRequestDataException;
+import com.example.armstorage.exceptions.RoleNotFoundException;
 import com.example.armstorage.exceptions.UserNotFoundException;
 
 import java.util.List;
@@ -23,4 +25,6 @@ public interface UserService{
     List<RoleEntity> getAllRoles();
 
     UserEntity register(CreateUserRequest request) throws InvalidRequestDataException;
+
+    UserEntity editUser(EditUserRequest request) throws UserNotFoundException, RoleNotFoundException;
 }

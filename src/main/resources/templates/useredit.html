@@ -52,32 +52,79 @@
 <div class="container">
     <p id="access-token" hidden="hidden" , th:text="|${session.token}|"></p>
     <p id="user-id" hidden="hidden" , th:text="|${userId}|"></p>
-
-
-    <input type="text" id="name" placeholder="Назва категорії">
-    <button onclick="createCategory()">СТВОРИТИ</button>
+    <input type="text" id="login" placeholder="Логін">
+    <input type="text" id="fullname" placeholder="Ім'я">
+    <select name="select" , id="select_role"></select>
+    <button onclick="editUser()">РЕДАГУВАТИ</button>
 </div>
 
 <script>
     const token = document.getElementById("access-token").textContent
     const userId = document.getElementById("user-id").textContent
+    const selector = document.getElementById("select_role")
 
-    function createCategory() {
-        const name = document.getElementById("name").value;
-        const xhr = new XMLHttpRequest();
-        xhr.open("GET", `/admin/category/create/${name}`);
-        xhr.setRequestHeader("Content-Type", "application/json");
-        xhr.setRequestHeader("Authorization", `Bearer ${token}`);
-        xhr.onreadystatechange = function () {
-            if (xhr.readyState === 4) {
-                if (xhr.status === 200) {
+    const xhr = new XMLHttpRequest();
+    xhr.open("GET", "/roles");
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+            const selector = document.getElementById("select_role")
+            const responseArray = JSON.parse(xhr.response);
+            console.log(responseArray)
+            responseArray.forEach(function(role) {
+                let option = document.createElement("option");
+                option.text = role.locale;
+                option.value = role.name;
+                selector.add(option);
+            });
+
+        }
+    };
+    xhr.send();
+
+    const xhr2 = new XMLHttpRequest();
+    xhr2.open("GET", "/storage/user/"+userId);
+    xhr2.setRequestHeader("Content-Type", "application/json");
+    xhr2.setRequestHeader("Authorization", `Bearer ${token}`);
+    xhr2.onreadystatechange = function () {
+        if (xhr2.readyState === 4 && xhr2.status === 200) {
+            const userEntity = JSON.parse(xhr2.response);
+            document.getElementById("login").value = userEntity.login;
+            document.getElementById("fullname").value = userEntity.fullname;
+
+            let options = selector.options;
+            for (let i = 0; i < options.length; i++) {
+                if (options[i].value === userEntity.role.name) {
+                    options[i].selected = true;
+                    break;
+                }
+            }
+        }
+    };
+    xhr2.send();
+
+    function editUser(){
+        const xhrEdit = new XMLHttpRequest();
+        const data = {
+            "userId": userId,
+            "fullname": document.getElementById("fullname").value,
+            "login": document.getElementById("login").value,
+            "role": selector.value
+        };
+
+        xhrEdit.open("POST", "/admin/user/edit");
+        xhrEdit.setRequestHeader("Content-Type", "application/json");
+        xhrEdit.setRequestHeader("Authorization", `Bearer ${token}`);
+        xhrEdit.onreadystatechange = function () {
+            if (xhrEdit.readyState === 4){
+                if (xhrEdit.status === 200) {
                     window.location.href = "/adminpage";
                 } else {
                     alert("Дані введено не коректно!");
                 }
             }
         };
-        xhr.send();
+        xhrEdit.send(JSON.stringify(data));
     }
 </script>
 </body>

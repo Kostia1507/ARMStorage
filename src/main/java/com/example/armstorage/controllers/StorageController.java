@@ -2,8 +2,10 @@ package com.example.armstorage.controllers;
 
 import com.example.armstorage.entities.CategoryEntity;
 import com.example.armstorage.entities.ItemEntity;
+import com.example.armstorage.entities.UserEntity;
 import com.example.armstorage.exceptions.CategoryNotFoundException;
 import com.example.armstorage.exceptions.ItemNotFoundException;
+import com.example.armstorage.exceptions.UserNotFoundException;
 import com.example.armstorage.services.StorageService;
 import com.example.armstorage.services.UserService;
 
@@ -52,6 +54,15 @@ public class StorageController {
     @GetMapping("/items/all")
     public List<ItemEntity> getAllItems(){
         return storageService.getAllItems();
+    }
+
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<UserEntity> getUserById(@PathVariable Long userId){
+        try{
+            return ResponseEntity.ok().body(userService.findUserById(userId));
+        }catch(UserNotFoundException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new UserEntity());
+        }
     }
 
 }

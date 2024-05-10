@@ -1,10 +1,12 @@
 package com.example.armstorage.services.impl;
 
 import com.example.armstorage.dto.CreateUserRequest;
+import com.example.armstorage.dto.EditUserRequest;
 import com.example.armstorage.dto.UserLoginRequest;
 import com.example.armstorage.entities.RoleEntity;
 import com.example.armstorage.entities.UserEntity;
 import com.example.armstorage.exceptions.InvalidRequestDataException;
+import com.example.armstorage.exceptions.RoleNotFoundException;
 import com.example.armstorage.exceptions.UserNotFoundException;
 import com.example.armstorage.repositories.RoleRepository;
 import com.example.armstorage.repositories.UserRepository;
@@ -45,6 +47,7 @@ public class UserServiceImpl implements UserService {
     public List<UserEntity> getAllUsers(){
         return userRepository.findAll();
     }
+
 
     @Override
     public UserEntity findUserById(Long id) throws UserNotFoundException {
@@ -130,5 +133,19 @@ public class UserServiceImpl implements UserService {
                 .build();
         userRepository.save(userEntity);
         return userEntity;
+    }
+
+    @Override
+    public UserEntity editUser(EditUserRequest request) throws UserNotFoundException, RoleNotFoundException{
+        UserEntity user = userRepository.findById(request.getUserId()).orElseThrow(
+                () -> new UserNotFoundException("user not found"));
+        RoleEntity role = roleRepository.findRoleEntityByName(request.getRole()).orElseThrow(
+                () -> new RoleNotFoundException("role not found"));
+
+        user.setFullname(request.getFullname());
+        user.setLogin(request.getLogin());
+        user.setRole(role);
+        userRepository.save(user);
+        return user;
     }
 }
