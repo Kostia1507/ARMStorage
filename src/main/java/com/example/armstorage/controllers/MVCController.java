@@ -60,4 +60,18 @@ public class MVCController {
         model.addAttribute("userId", userId);
         return "useredit";
     }
+
+    @GetMapping("/adduser/{userId}")
+    public String addUserPage(Model model, HttpSession session, @PathVariable Long userId){
+        model.addAttribute("token", session.getAttribute("token"));
+        model.addAttribute("userId", userId);
+        return "adduser";
+    }
+
+    @GetMapping("/removeuser/{userId}")
+    public String removeUserPage(Model model, HttpSession session, @PathVariable Long userId){
+        model.addAttribute("token", session.getAttribute("token"));
+        model.addAttribute("userId", userId);
+        return "removeuser";
+    }
 }

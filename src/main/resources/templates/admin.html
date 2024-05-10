@@ -62,6 +62,8 @@
     <br/><br/>
     <select name="select" , id="select_user"></select>
     <button onclick="editUser()">Редагувати користувача</button>
+    <button onclick="addUser()">Добавити в склад</button>
+    <button onclick="removeUser()">Прибрати зі складу</button>
 </div>
 
 <script>
@@ -109,8 +111,15 @@
     }
 
     function editUser(){
-
         window.location.href = "/edit-user/ " + document.getElementById("select_user").value;
+    }
+
+    function addUser(){
+        window.location.href = "/adduser/ " + document.getElementById("select_user").value;
+    }
+
+    function removeUser(){
+        window.location.href = "/removeuser/ " + document.getElementById("select_user").value;
     }
 
 

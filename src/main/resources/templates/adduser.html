@@ -52,66 +52,65 @@
 <div class="container">
     <p id="access-token" hidden="hidden" , th:text="|${session.token}|"></p>
     <p id="user-id" hidden="hidden" , th:text="|${userId}|"></p>
-    <input type="text" id="login" placeholder="Логін">
-    <input type="text" id="fullname" placeholder="Ім'я">
-    <select name="select" , id="select_role"></select>
-    <button onclick="editUser()">РЕДАГУВАТИ</button>
+    <select name="select" , id="select_storage"></select>
+    <button onclick="editUser()">ДОБАВИТИ</button>
 </div>
 
 <script>
     const token = document.getElementById("access-token").textContent
     const userId = document.getElementById("user-id").textContent
-    const selector = document.getElementById("select_role")
+    const selector = document.getElementById("select_storage")
 
-    const xhr = new XMLHttpRequest();
-    xhr.open("GET", "/roles");
-    xhr.setRequestHeader("Content-Type", "application/json");
-    xhr.onreadystatechange = function () {
-        if (xhr.readyState === 4 && xhr.status === 200) {
-            const selector = document.getElementById("select_role")
-            const responseArray = JSON.parse(xhr.response);
-            responseArray.forEach(function(role) {
-                let option = document.createElement("option");
-                option.text = role.locale;
-                option.value = role.name;
-                selector.add(option);
-            });
-
-        }
-    };
-    xhr.send();
-
-    const xhr2 = new XMLHttpRequest();
-    xhr2.open("GET", "/storage/user/"+userId);
-    xhr2.setRequestHeader("Content-Type", "application/json");
-    xhr2.setRequestHeader("Authorization", `Bearer ${token}`);
-    xhr2.onreadystatechange = function () {
-        if (xhr2.readyState === 4 && xhr2.status === 200) {
-            const userEntity = JSON.parse(xhr2.response);
-            document.getElementById("login").value = userEntity.login;
-            document.getElementById("fullname").value = userEntity.fullname;
-
-            let options = selector.options;
-            for (let i = 0; i < options.length; i++) {
-                if (options[i].value === userEntity.role.name) {
-                    options[i].selected = true;
-                    break;
+    const xhrAll = new XMLHttpRequest();
+    let allStorages = [];
+    let storagesWithoutUser = [];
+    let userStorages = [];
+    xhrAll.open("GET", "/admin/storages/all");
+    xhrAll.setRequestHeader("Content-Type", "application/json");
+    xhrAll.setRequestHeader("Authorization", `Bearer ${token}`);
+    xhrAll.onreadystatechange = function () {
+        if (xhrAll.readyState === 4 && xhrAll.status === 200) {
+            allStorages = JSON.parse(xhrAll.response);
+            const xhrUser = new XMLHttpRequest();
+            xhrUser.open("GET", "/admin/storages/user/"+userId);
+            xhrUser.setRequestHeader("Content-Type", "application/json");
+            xhrUser.setRequestHeader("Authorization", `Bearer ${token}`);
+            xhrUser.onreadystatechange = function () {
+                if (xhrUser.readyState === 4 && xhrUser.status === 200) {
+                    if(xhrUser.response.length === 0){
+                        userStorages = []
+                    }else {
+                        userStorages = JSON.parse(xhrUser.response);
+                    }
+                    console.log(userStorages)
+                    storagesWithoutUser = allStorages.filter(function(storage) {
+                        return !userStorages.some(function(userStorage) {
+                            return userStorage.id === storage.id;
+                        });
+                    });
+                    console.log(storagesWithoutUser)
+                    storagesWithoutUser.forEach(function(storage) {
+                        let option = document.createElement("option");
+                        option.text = storage.name;
+                        option.value = storage.id;
+                        selector.add(option);
+                    });
                 }
-            }
+            };
+            xhrUser.send();
         }
     };
-    xhr2.send();
+    xhrAll.send();
+
 
     function editUser(){
         const xhrEdit = new XMLHttpRequest();
         const data = {
             "userId": userId,
-            "fullname": document.getElementById("fullname").value,
-            "login": document.getElementById("login").value,
-            "role": selector.value
+            "storageId": selector.value,
         };
 
-        xhrEdit.open("POST", "/admin/user/edit");
+        xhrEdit.open("POST", "/admin/storages/add-user");
         xhrEdit.setRequestHeader("Content-Type", "application/json");
         xhrEdit.setRequestHeader("Authorization", `Bearer ${token}`);
         xhrEdit.onreadystatechange = function () {

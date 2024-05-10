@@ -52,66 +52,47 @@
 <div class="container">
     <p id="access-token" hidden="hidden" , th:text="|${session.token}|"></p>
     <p id="user-id" hidden="hidden" , th:text="|${userId}|"></p>
-    <input type="text" id="login" placeholder="Логін">
-    <input type="text" id="fullname" placeholder="Ім'я">
-    <select name="select" , id="select_role"></select>
-    <button onclick="editUser()">РЕДАГУВАТИ</button>
+    <select name="select" , id="select_storage"></select>
+    <button onclick="editUser()">ВИДАЛИТИ</button>
 </div>
 
 <script>
     const token = document.getElementById("access-token").textContent
     const userId = document.getElementById("user-id").textContent
-    const selector = document.getElementById("select_role")
+    const selector = document.getElementById("select_storage")
 
-    const xhr = new XMLHttpRequest();
-    xhr.open("GET", "/roles");
-    xhr.setRequestHeader("Content-Type", "application/json");
-    xhr.onreadystatechange = function () {
-        if (xhr.readyState === 4 && xhr.status === 200) {
-            const selector = document.getElementById("select_role")
-            const responseArray = JSON.parse(xhr.response);
-            responseArray.forEach(function(role) {
+    let userStorages = [];
+    const xhrUser = new XMLHttpRequest();
+    xhrUser.open("GET", "/admin/storages/user/"+userId);
+    xhrUser.setRequestHeader("Content-Type", "application/json");
+    xhrUser.setRequestHeader("Authorization", `Bearer ${token}`);
+    xhrUser.onreadystatechange = function () {
+        if (xhrUser.readyState === 4 && xhrUser.status === 200) {
+            if(xhrUser.response.length === 0){
+                userStorages = []
+            }else {
+                userStorages = JSON.parse(xhrUser.response);
+            }
+            userStorages.forEach(function(storage) {
                 let option = document.createElement("option");
-                option.text = role.locale;
-                option.value = role.name;
+                option.text = storage.name;
+                option.value = storage.id;
                 selector.add(option);
             });
-
         }
     };
-    xhr.send();
+    xhrUser.send();
 
-    const xhr2 = new XMLHttpRequest();
-    xhr2.open("GET", "/storage/user/"+userId);
-    xhr2.setRequestHeader("Content-Type", "application/json");
-    xhr2.setRequestHeader("Authorization", `Bearer ${token}`);
-    xhr2.onreadystatechange = function () {
-        if (xhr2.readyState === 4 && xhr2.status === 200) {
-            const userEntity = JSON.parse(xhr2.response);
-            document.getElementById("login").value = userEntity.login;
-            document.getElementById("fullname").value = userEntity.fullname;
 
-            let options = selector.options;
-            for (let i = 0; i < options.length; i++) {
-                if (options[i].value === userEntity.role.name) {
-                    options[i].selected = true;
-                    break;
-                }
-            }
-        }
-    };
-    xhr2.send();
 
     function editUser(){
         const xhrEdit = new XMLHttpRequest();
         const data = {
             "userId": userId,
-            "fullname": document.getElementById("fullname").value,
-            "login": document.getElementById("login").value,
-            "role": selector.value
+            "storageId": selector.value,
         };
 
-        xhrEdit.open("POST", "/admin/user/edit");
+        xhrEdit.open("POST", "/admin/storages/remove-user");
         xhrEdit.setRequestHeader("Content-Type", "application/json");
         xhrEdit.setRequestHeader("Authorization", `Bearer ${token}`);
         xhrEdit.onreadystatechange = function () {
