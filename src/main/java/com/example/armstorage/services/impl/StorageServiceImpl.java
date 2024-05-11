@@ -140,10 +140,26 @@ public class StorageServiceImpl implements StorageService {
                 (new StorageNotFoundException("storage not found")));
         ItemEntity itemEntity = itemRepository.findById(request.getItemId()).orElseThrow(() ->
                 (new ItemNotFoundException("item not found")));
+        ItemsInStorageEntity currentItemInCell = null;
+        List<ItemsInStorageEntity> itemsInStorage = storageEntity.getItemsInStorage();
+        for(ItemsInStorageEntity item : itemsInStorage){
+            if(item.getCell().equals(request.getCell())){
+                currentItemInCell = item;
+            }
+        }
+        Long currentCount = 0L;
+        if(currentItemInCell != null){
+            if(currentItemInCell.getItem().getId().equals(request.getItemId())){
+                currentCount = currentItemInCell.getCount();
+            }else{
+                throw new ItemNotFoundException("Cell occupied with another item");
+            }
+        }
+
         ItemsInStorageEntity itemsInStorageEntity = ItemsInStorageEntity.builder()
                 .storage(storageEntity)
                 .item(itemEntity)
-                .count(request.getCount())
+                .count(request.getCount()+currentCount)
                 .cell(request.getCell()).build();
         itemsInStorageRepository.save(itemsInStorageEntity);
         return true;

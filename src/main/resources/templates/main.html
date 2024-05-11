@@ -31,6 +31,9 @@
         }
 
         .top-row {
+            padding-left: 2%;
+            display: flex;
+            align-items: center;
             border-bottom: 5px solid #cccccc;
             height: 15%;
         }
@@ -70,6 +73,10 @@
         button:hover{
             background-color: #006bff;
         }
+
+        .top-row-button{
+            margin-right: 2%;
+        }
     </style>
     <title>Storage ARM</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -86,7 +93,11 @@
         </div>
         <div class="right-column" , id="right-column">
             <div class="top-row" , id="right-tow-row">
-                <button onclick="addItem()">Прийом</button>
+                <button class="top-row-button" onclick="addItem()">Прийом товару</button>
+                <button class="top-row-button" onclick="giveItem()">Видача товару</button>
+                <button class="top-row-button" onclick="moveItem()">Переміщення товару</button>
+                <button class="top-row-button" onclick="removeItem()">Списання товару</button>
+                <button class="top-row-button" onclick="checkItem()">Інвертиризація</button>
             </div>
         </div>
     </div>
@@ -124,6 +135,22 @@
 
         function addItem(){
             window.location.href = "/additem";
+        }
+
+        function giveItem(){
+
+        }
+
+        function moveItem(){
+
+        }
+
+        function removeItem(){
+
+        }
+
+        function checkItem(){
+
         }
 
     </script>
