@@ -86,6 +86,7 @@
         </div>
         <div class="right-column" , id="right-column">
             <div class="top-row" , id="right-tow-row">
+                <button onclick="addItem()">Прийом</button>
             </div>
         </div>
     </div>
@@ -105,6 +106,26 @@
         function openAdminPage(){
             window.location.href = "/adminpage";
         }
+
+        let userStorages = []
+        const xhrStorages = new XMLHttpRequest();
+        xhrStorages.open("GET", "/storage/mystorages");
+        xhrStorages.setRequestHeader("Content-Type", "application/json");
+        xhrStorages.setRequestHeader("Authorization", `Bearer ${token}`);
+        xhrStorages.onreadystatechange = function () {
+            if (xhrStorages.readyState === 4) {
+                if (xhrStorages.status === 200) {
+                    userStorages = JSON.parse(xhrStorages.response)
+                    console.log(userStorages)
+                }
+            }
+        };
+        xhrStorages.send();
+
+        function addItem(){
+            window.location.href = "/additem";
+        }
+
     </script>
 </body>
 </html>

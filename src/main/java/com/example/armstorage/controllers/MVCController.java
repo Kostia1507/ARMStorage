@@ -74,4 +74,11 @@ public class MVCController {
         model.addAttribute("userId", userId);
         return "removeuser";
     }
+
+    @GetMapping("/additem")
+    public String addItemPage(Model model, HttpSession session){
+        model.addAttribute("token", session.getAttribute("token"));
+        return "additemtostorage";
+    }
+
 }

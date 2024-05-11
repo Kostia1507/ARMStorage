@@ -26,6 +26,6 @@ public class CategoryEntity {
     private String name;
 
     @JsonIgnore
-    @OneToMany()
+    @OneToMany(mappedBy="category")
     private Set<ItemEntity> items;
 }

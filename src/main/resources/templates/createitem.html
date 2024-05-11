@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Storage ARM</title>
+    <title>ARM Admin panel</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -67,6 +67,7 @@
     xhr.onreadystatechange = function () {
         if (xhr.readyState === 4 && xhr.status === 200) {
             const selector = document.getElementById("select_category")
+            console.log(xhr.response)
             const responseArray = JSON.parse(xhr.response);
             responseArray.forEach(function(category) {
                 let option = document.createElement("option");

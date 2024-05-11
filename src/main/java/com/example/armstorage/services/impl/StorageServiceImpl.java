@@ -1,13 +1,7 @@
 package com.example.armstorage.services.impl;
 
-import com.example.armstorage.dto.CreateItemRequest;
-import com.example.armstorage.dto.CreateStorageRequest;
-import com.example.armstorage.dto.EditItemRequest;
-import com.example.armstorage.dto.EditUserInStorageRequest;
-import com.example.armstorage.entities.CategoryEntity;
-import com.example.armstorage.entities.ItemEntity;
-import com.example.armstorage.entities.StorageEntity;
-import com.example.armstorage.entities.UserEntity;
+import com.example.armstorage.dto.*;
+import com.example.armstorage.entities.*;
 import com.example.armstorage.exceptions.CategoryNotFoundException;
 import com.example.armstorage.exceptions.ItemNotFoundException;
 import com.example.armstorage.exceptions.StorageNotFoundException;
@@ -27,14 +21,16 @@ public class StorageServiceImpl implements StorageService {
     private final ItemRepository itemRepository;
     private final OperationRepository operationRepository;
     private final StorageRepository storageRepository;
+    private final ItemsInStorageRepository itemsInStorageRepository;
 
     private final UserRepository userRepository;
 
-    public StorageServiceImpl(CategoriesRepository categoriesRepository, ItemRepository itemRepository, OperationRepository operationRepository, StorageRepository storageRepository, UserRepository userRepository) {
+    public StorageServiceImpl(CategoriesRepository categoriesRepository, ItemRepository itemRepository, OperationRepository operationRepository, StorageRepository storageRepository, ItemsInStorageRepository itemsInStorageRepository, UserRepository userRepository) {
         this.categoriesRepository = categoriesRepository;
         this.itemRepository = itemRepository;
         this.operationRepository = operationRepository;
         this.storageRepository = storageRepository;
+        this.itemsInStorageRepository = itemsInStorageRepository;
         this.userRepository = userRepository;
     }
 
@@ -136,6 +132,22 @@ public class StorageServiceImpl implements StorageService {
         return true;
     }
 
+
+    @Override
+    public boolean addItemToStorage(AddItemToStorageRequest request)
+            throws StorageNotFoundException, ItemNotFoundException {
+        StorageEntity storageEntity = storageRepository.findById(request.getStorageId()).orElseThrow(() ->
+                (new StorageNotFoundException("storage not found")));
+        ItemEntity itemEntity = itemRepository.findById(request.getItemId()).orElseThrow(() ->
+                (new ItemNotFoundException("item not found")));
+        ItemsInStorageEntity itemsInStorageEntity = ItemsInStorageEntity.builder()
+                .storage(storageEntity)
+                .item(itemEntity)
+                .count(request.getCount())
+                .cell(request.getCell()).build();
+        itemsInStorageRepository.save(itemsInStorageEntity);
+        return true;
+    }
 
 
 
