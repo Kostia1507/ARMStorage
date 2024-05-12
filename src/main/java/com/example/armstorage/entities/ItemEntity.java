@@ -1,5 +1,6 @@
 package com.example.armstorage.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -33,6 +34,7 @@ public class ItemEntity {
     @JoinColumn(name="category_id")
     private CategoryEntity category;
 
+    @JsonIgnore
     @OneToMany(mappedBy="item")
     private List<ItemsInStorageEntity> itemsInStorage;
 }

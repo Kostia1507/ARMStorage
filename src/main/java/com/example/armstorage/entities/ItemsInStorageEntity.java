@@ -9,7 +9,7 @@ import java.io.Serializable;
 
 @Entity
 @Table(name = "items_in_storage")
-@Getter
+@Getter @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -18,7 +18,6 @@ public class ItemsInStorageEntity {
 
     @Id
     @ManyToOne()
-    @JsonIgnore
     @JoinColumn(name = "item_id", referencedColumnName = "item_id")
     private ItemEntity item;
 

@@ -165,6 +165,40 @@ public class StorageServiceImpl implements StorageService {
         return true;
     }
 
+    @Override
+    public Set<ItemEntity> getAllAvailableItems(UserEntity user){
+        Set<ItemEntity> items = new HashSet<>();
+        for(StorageEntity storageEntity : user.getStorages()){
+            for(ItemsInStorageEntity item : storageEntity.getItemsInStorage()){
+                items.add(item.getItem());
+            }
+        }
+        return items;
+    }
+
+    @Override
+    public boolean removeItemToStorage(AddItemToStorageRequest request)
+            throws StorageNotFoundException, ItemNotFoundException {
+        StorageEntity storageEntity = storageRepository.findById(request.getStorageId()).orElseThrow(() ->
+                (new StorageNotFoundException("storage not found")));
+        ItemsInStorageEntity currentItemInCell = null;
+        List<ItemsInStorageEntity> itemsInStorage = storageEntity.getItemsInStorage();
+        for(ItemsInStorageEntity item : itemsInStorage){
+            if(item.getCell().equals(request.getCell())){
+                currentItemInCell = item;
+            }
+        }
+        if((currentItemInCell == null) || (!currentItemInCell.getItem().getId().equals(request.getItemId())))
+            throw new ItemNotFoundException("Cell is empty");
+        if(request.getCount() >= currentItemInCell.getCount()){
+            itemsInStorageRepository.delete(currentItemInCell);
+        }else{
+            currentItemInCell.setCount(currentItemInCell.getCount() - request.getCount());
+            itemsInStorageRepository.save(currentItemInCell);
+        }
+        return true;
+    }
+
 
 
 }

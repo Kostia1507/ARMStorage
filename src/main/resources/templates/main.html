@@ -127,11 +127,29 @@
             if (xhrStorages.readyState === 4) {
                 if (xhrStorages.status === 200) {
                     userStorages = JSON.parse(xhrStorages.response)
+                    console.log("storages")
                     console.log(userStorages)
                 }
             }
         };
         xhrStorages.send();
+
+        let userItems = []
+        const xhrItems = new XMLHttpRequest();
+        xhrItems.open("GET", "/storage/items/available");
+        xhrItems.setRequestHeader("Content-Type", "application/json");
+        xhrItems.setRequestHeader("Authorization", `Bearer ${token}`);
+        xhrItems.onreadystatechange = function () {
+            if (xhrItems.readyState === 4) {
+                if (xhrItems.status === 200) {
+                    userItems = JSON.parse(xhrItems.response)
+                    console.log("items")
+                    console.log(userItems)
+                    // load all items by categories in left panel
+                }
+            }
+        };
+        xhrItems.send();
 
         function addItem(){
             window.location.href = "/additem";
@@ -146,7 +164,7 @@
         }
 
         function removeItem(){
-
+            window.location.href = "/removeitem";
         }
 
         function checkItem(){

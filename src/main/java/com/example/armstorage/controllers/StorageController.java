@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -103,6 +104,35 @@ public class StorageController {
             return ResponseEntity.ok().body(String.valueOf(storageService.addItemToStorage(request)));
         }catch(ItemNotFoundException | StorageNotFoundException e){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/remove-item")
+    public ResponseEntity<String> removeItemFromStorage(@RequestBody AddItemToStorageRequest request){
+        try{
+            return ResponseEntity.ok().body(String.valueOf(storageService.removeItemToStorage(request)));
+        }catch(ItemNotFoundException | StorageNotFoundException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/items/available")
+    public Set<ItemEntity> getAvailableItems(){
+        try {
+            UserEntity user = userService.findUserById(getUserDetails().getId());
+            return storageService.getAllAvailableItems(user);
+        }catch(UserNotFoundException e){
+            return null;
+        }
+    }
+
+    @GetMapping("/items/all/{id}")
+    public List<ItemsInStorageEntity> getAllItemsInStorage(@PathVariable Long id){
+        try {
+            StorageEntity storageEntity = storageService.getStorageById(id);
+            return storageEntity.getItemsInStorage();
+        }catch(StorageNotFoundException e){
+            return new ArrayList<>();
         }
     }
 

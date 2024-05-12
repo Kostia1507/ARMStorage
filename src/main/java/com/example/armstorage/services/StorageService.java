@@ -1,10 +1,7 @@
 package com.example.armstorage.services;
 
 import com.example.armstorage.dto.*;
-import com.example.armstorage.entities.CategoryEntity;
-import com.example.armstorage.entities.ItemEntity;
-import com.example.armstorage.entities.ItemsInStorageEntity;
-import com.example.armstorage.entities.StorageEntity;
+import com.example.armstorage.entities.*;
 import com.example.armstorage.exceptions.CategoryNotFoundException;
 import com.example.armstorage.exceptions.ItemNotFoundException;
 import com.example.armstorage.exceptions.StorageNotFoundException;
@@ -41,5 +38,10 @@ public interface StorageService {
             throws UserNotFoundException, StorageNotFoundException;
 
     boolean addItemToStorage(AddItemToStorageRequest request)
+            throws StorageNotFoundException, ItemNotFoundException;
+
+    Set<ItemEntity> getAllAvailableItems(UserEntity user);
+
+    boolean removeItemToStorage(AddItemToStorageRequest request)
             throws StorageNotFoundException, ItemNotFoundException;
 }
