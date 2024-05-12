@@ -110,7 +110,16 @@ public class StorageController {
     @PostMapping("/remove-item")
     public ResponseEntity<String> removeItemFromStorage(@RequestBody AddItemToStorageRequest request){
         try{
-            return ResponseEntity.ok().body(String.valueOf(storageService.removeItemToStorage(request)));
+            return ResponseEntity.ok().body(String.valueOf(storageService.removeItemToStorage(request, 0)));
+        }catch(ItemNotFoundException | StorageNotFoundException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/give-item")
+    public ResponseEntity<String> giveItemFromStorage(@RequestBody AddItemToStorageRequest request){
+        try{
+            return ResponseEntity.ok().body(String.valueOf(storageService.removeItemToStorage(request, 1)));
         }catch(ItemNotFoundException | StorageNotFoundException e){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }

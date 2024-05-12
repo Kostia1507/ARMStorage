@@ -177,7 +177,7 @@ public class StorageServiceImpl implements StorageService {
     }
 
     @Override
-    public boolean removeItemToStorage(AddItemToStorageRequest request)
+    public boolean removeItemToStorage(AddItemToStorageRequest request, int action)
             throws StorageNotFoundException, ItemNotFoundException {
         StorageEntity storageEntity = storageRepository.findById(request.getStorageId()).orElseThrow(() ->
                 (new StorageNotFoundException("storage not found")));
@@ -196,6 +196,12 @@ public class StorageServiceImpl implements StorageService {
             currentItemInCell.setCount(currentItemInCell.getCount() - request.getCount());
             itemsInStorageRepository.save(currentItemInCell);
         }
+        if(action > 1){
+            // предмет відгрузили
+        }else{
+            //предмет списали
+        }
+
         return true;
     }
 

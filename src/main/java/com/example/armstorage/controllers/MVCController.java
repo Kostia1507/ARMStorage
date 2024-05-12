@@ -87,4 +87,10 @@ public class MVCController {
         return "removeitemfromstorage";
     }
 
+    @GetMapping("/giveitem")
+    public String giveItemPage(Model model, HttpSession session){
+        model.addAttribute("token", session.getAttribute("token"));
+        return "giveitem";
+    }
+
 }
