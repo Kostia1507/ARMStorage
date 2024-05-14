@@ -77,6 +77,26 @@
         .top-row-button{
             margin-right: 2%;
         }
+
+        .toggle-button {
+            padding: 10px 20px;
+            width: 100%;
+            background-color: #d0d0d0;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+
+        .toggle-button:hover{
+            background-color: #c0c0c0;
+        }
+
+        .category{
+            display: none;
+        }
+        .category.special{
+            display: block;
+        }
     </style>
     <title>Storage ARM</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -89,6 +109,8 @@
             <div class="left-top-row" , id="left-top-row">
                 <p class="fullname" th:text="|${session.fullname}|"></p>
                 <p class="fullname" th:text="|${session.roleLocale}|"></p>
+            </div>
+            <div id="categories-panel">
             </div>
         </div>
         <div class="right-column" , id="right-column">
@@ -127,8 +149,6 @@
             if (xhrStorages.readyState === 4) {
                 if (xhrStorages.status === 200) {
                     userStorages = JSON.parse(xhrStorages.response)
-                    console.log("storages")
-                    console.log(userStorages)
                 }
             }
         };
@@ -143,9 +163,42 @@
             if (xhrItems.readyState === 4) {
                 if (xhrItems.status === 200) {
                     userItems = JSON.parse(xhrItems.response)
-                    console.log("items")
-                    console.log(userItems)
-                    // load all items by categories in left panel
+                    const groupedItems = userItems.reduce((acc, currentValue) => {
+                        if (acc[currentValue.category.id]) {
+                            acc[currentValue.category.id].push(currentValue);
+                        } else {
+                            acc[currentValue.category.id] = [currentValue];
+                        }
+                        return acc;
+                    }, {});
+                    const categoryIdToNameMap = {};
+                    userItems.forEach(item => {
+                        categoryIdToNameMap[item.category.id] = item.category.name;
+                    });
+                    let leftContainer = document.getElementById("categories-panel")
+                    for (let categoryId in groupedItems) {
+                        if (groupedItems.hasOwnProperty(categoryId)) {
+                            let categoryItems = groupedItems[categoryId];
+                            let toggleButton = document.createElement("button");
+                            toggleButton.textContent = categoryIdToNameMap[categoryId] + "▼"
+                            toggleButton.setAttribute("divId", categoryId)
+                            toggleButton.className = "toggle-button"
+                            toggleButton.onclick = toggleTab
+                            leftContainer.appendChild(toggleButton)
+                            let itemsDiv = document.createElement("div");
+                            itemsDiv.id = categoryId
+                            itemsDiv.className = "category"
+                            categoryItems.forEach(function (item) {
+                                // TODO buttons for management
+                                let itemText = document.createElement("p");
+                                itemText.textContent=item.name
+                                itemsDiv.appendChild(itemText)
+                            })
+                            leftContainer.appendChild(itemsDiv)
+                            let hr = document.createElement("hr");
+                            leftContainer.appendChild(hr)
+                        }
+                    }
                 }
             }
         };
@@ -169,6 +222,19 @@
 
         function checkItem(){
 
+        }
+
+        function toggleTab(){
+            const divId = event.target.getAttribute('divId')
+            console.log(divId)
+            const element = document.getElementById(divId)
+            if (element.classList.contains('special')) {
+                element.classList.remove('special');
+                window.event.target.textContent = window.event.target.textContent.slice(0, -1) + "▼"
+            }else{
+                element.classList.add('special');
+                window.event.target.textContent = window.event.target.textContent.slice(0, -1) + "▲"
+            }
         }
 
     </script>

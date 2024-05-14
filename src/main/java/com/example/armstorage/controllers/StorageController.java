@@ -1,6 +1,7 @@
 package com.example.armstorage.controllers;
 
 import com.example.armstorage.dto.AddItemToStorageRequest;
+import com.example.armstorage.dto.CategoryWithItemsResponse;
 import com.example.armstorage.entities.*;
 import com.example.armstorage.exceptions.CategoryNotFoundException;
 import com.example.armstorage.exceptions.ItemNotFoundException;
@@ -143,6 +144,21 @@ public class StorageController {
         }catch(StorageNotFoundException e){
             return new ArrayList<>();
         }
+    }
+
+    // I never tested this end-point
+    @GetMapping("/items/bycategory")
+    public List<CategoryWithItemsResponse> getAllItemsByCategory(){
+        List<CategoryEntity> categoryEntities = storageService.getAllCategories();
+        List<CategoryWithItemsResponse> byCategories = new ArrayList<CategoryWithItemsResponse>();
+        for(CategoryEntity category : categoryEntities){
+            byCategories.add(CategoryWithItemsResponse.builder()
+                    .id(category.getId())
+                    .name(category.getName())
+                    .items(category.getItems())
+                    .build());
+        }
+        return byCategories;
     }
 
 }
