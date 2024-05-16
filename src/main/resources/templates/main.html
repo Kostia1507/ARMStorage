@@ -91,6 +91,20 @@
             background-color: #c0c0c0;
         }
 
+        .search-button {
+            margin-left: 10%;
+            padding: 10px 20px;
+            width: 80%;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+
+        .search-button:hover{
+            background-color: #006bff;
+        }
+
         .category{
             display: none;
         }
@@ -189,10 +203,15 @@
                             itemsDiv.id = categoryId
                             itemsDiv.className = "category"
                             categoryItems.forEach(function (item) {
-                                // TODO buttons for management
                                 let itemText = document.createElement("p");
                                 itemText.textContent=item.name
                                 itemsDiv.appendChild(itemText)
+                                let itemBtn = document.createElement("button");
+                                itemBtn.textContent = "Пошук"
+                                itemBtn.setAttribute("itemId", item.id)
+                                itemBtn.className = "search-button"
+                                itemBtn.onclick = findItem
+                                itemsDiv.appendChild(itemBtn)
                             })
                             leftContainer.appendChild(itemsDiv)
                             let hr = document.createElement("hr");
@@ -226,7 +245,6 @@
 
         function toggleTab(){
             const divId = event.target.getAttribute('divId')
-            console.log(divId)
             const element = document.getElementById(divId)
             if (element.classList.contains('special')) {
                 element.classList.remove('special');
@@ -235,6 +253,24 @@
                 element.classList.add('special');
                 window.event.target.textContent = window.event.target.textContent.slice(0, -1) + "▲"
             }
+        }
+
+        function findItem(){
+            const itemId = event.target.getAttribute('itemId')
+            const xhrItem = new XMLHttpRequest();
+            xhrItem.open("GET", "/storage/items/found/" + itemId);
+            xhrItem.setRequestHeader("Content-Type", "application/json");
+            xhrItem.setRequestHeader("Authorization", `Bearer ${token}`);
+            xhrItem.onreadystatechange = function () {
+                if (xhrItem.readyState === 4) {
+                    if (xhrItem.status === 200) {
+                        const foundItem = JSON.parse(xhrItem.response)
+                        console.log(foundItem)
+                        console.log()
+                    }
+                }
+            };
+            xhrItem.send()
         }
 
     </script>

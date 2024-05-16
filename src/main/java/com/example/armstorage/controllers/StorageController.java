@@ -2,6 +2,7 @@ package com.example.armstorage.controllers;
 
 import com.example.armstorage.dto.AddItemToStorageRequest;
 import com.example.armstorage.dto.CategoryWithItemsResponse;
+import com.example.armstorage.dto.FoundItemResponse;
 import com.example.armstorage.entities.*;
 import com.example.armstorage.exceptions.CategoryNotFoundException;
 import com.example.armstorage.exceptions.ItemNotFoundException;
@@ -161,4 +162,20 @@ public class StorageController {
         return byCategories;
     }
 
+    @GetMapping("/items/found/{itemId}")
+    public ResponseEntity<List<FoundItemResponse>> foundItemInStorages(@PathVariable Long itemId){
+        ItemEntity item = null;
+        try{
+            item = storageService.getItemById(itemId);
+        }catch(ItemNotFoundException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ArrayList<>());
+        }
+        UserEntity user = null;
+        try{
+            user = userService.findUserById(getUserDetails().getId());
+        }catch(UserNotFoundException e){
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ArrayList<>());
+        }
+        return ResponseEntity.ok().body(storageService.foundAvailableItems(user, item));
+    }
 }

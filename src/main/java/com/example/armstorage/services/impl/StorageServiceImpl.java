@@ -205,6 +205,22 @@ public class StorageServiceImpl implements StorageService {
         return true;
     }
 
+    @Override
+    public List<FoundItemResponse> foundAvailableItems(UserEntity user, ItemEntity item){
+        ArrayList<FoundItemResponse> items = new ArrayList<>();
+        Set<StorageEntity> userStorages = user.getStorages();
+        for(ItemsInStorageEntity itemsInStorage : item.getItemsInStorage()){
+            if(userStorages.contains(itemsInStorage.getStorage())){
+                items.add(FoundItemResponse.builder()
+                        .item(item)
+                        .storageEntity(itemsInStorage.getStorage())
+                        .cell(itemsInStorage.getCell())
+                        .count(itemsInStorage.getCount())
+                        .build());
+            }
+        }
+        return items;
+    }
 
 
 }
