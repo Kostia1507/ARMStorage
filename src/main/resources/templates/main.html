@@ -111,6 +111,10 @@
         .category.special{
             display: block;
         }
+        .item-name{
+            width: 100%;
+            text-align: center;
+        }
     </style>
     <title>Storage ARM</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -133,7 +137,9 @@
                 <button class="top-row-button" onclick="giveItem()">Видача товару</button>
                 <button class="top-row-button" onclick="moveItem()">Переміщення товару</button>
                 <button class="top-row-button" onclick="removeItem()">Списання товару</button>
-                <button class="top-row-button" onclick="checkItem()">Інвертиризація</button>
+                <button class="top-row-button" onclick="checkItem()">Інвентаризація</button>
+            </div>
+            <div id="workspace">
             </div>
         </div>
     </div>
@@ -205,6 +211,7 @@
                             categoryItems.forEach(function (item) {
                                 let itemText = document.createElement("p");
                                 itemText.textContent=item.name
+                                itemText.className="item-name"
                                 itemsDiv.appendChild(itemText)
                                 let itemBtn = document.createElement("button");
                                 itemBtn.textContent = "Пошук"
@@ -212,6 +219,8 @@
                                 itemBtn.className = "search-button"
                                 itemBtn.onclick = findItem
                                 itemsDiv.appendChild(itemBtn)
+                                let hrItem = document.createElement("hr");
+                                itemsDiv.appendChild(hrItem)
                             })
                             leftContainer.appendChild(itemsDiv)
                             let hr = document.createElement("hr");
@@ -265,8 +274,31 @@
                 if (xhrItem.readyState === 4) {
                     if (xhrItem.status === 200) {
                         const foundItem = JSON.parse(xhrItem.response)
-                        console.log(foundItem)
-                        console.log()
+                        let workSpace = document.getElementById("workspace")
+                        // I found a great answer that removing last element is faster than removing first
+                        // Also checking for first is faster than for last element
+                        while (workSpace.firstChild) {
+                            workSpace.removeChild(workSpace.lastChild);
+                        }
+                        if(foundItem.length > 0){
+                            let itemName = document.createElement("p");
+                            itemName.textContent = foundItem[0].item.name + " можна взяти з:"
+                            workSpace.appendChild(itemName)
+
+                            foundItem.sort((a, b) => a.count - b.count);
+                            foundItem.forEach(function(itemInStorage){
+                                let hr = document.createElement("hr");
+                                workSpace.appendChild(hr)
+                                let itemOutput = document.createElement("p");
+                                itemOutput.textContent = `На складі ${itemInStorage.storageEntity.name} в комірці
+                                 ${itemInStorage.cell} є ${itemInStorage.count} ${itemInStorage.item.measurement}`
+                                workSpace.appendChild(itemOutput)
+                            })
+                        }else{
+                            let itemName = document.createElement("p");
+                            itemName.textContent = "Предмет відсутній на складі"
+                            workSpace.appendChild(itemName)
+                        }
                     }
                 }
             };
