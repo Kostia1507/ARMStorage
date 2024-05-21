@@ -3,6 +3,7 @@ package com.example.armstorage.controllers;
 import com.example.armstorage.dto.AddItemToStorageRequest;
 import com.example.armstorage.dto.CategoryWithItemsResponse;
 import com.example.armstorage.dto.FoundItemResponse;
+import com.example.armstorage.dto.MoveItemRequest;
 import com.example.armstorage.entities.*;
 import com.example.armstorage.exceptions.CategoryNotFoundException;
 import com.example.armstorage.exceptions.ItemNotFoundException;
@@ -122,6 +123,15 @@ public class StorageController {
     public ResponseEntity<String> giveItemFromStorage(@RequestBody AddItemToStorageRequest request){
         try{
             return ResponseEntity.ok().body(String.valueOf(storageService.removeItemToStorage(request, 1)));
+        }catch(ItemNotFoundException | StorageNotFoundException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/move-item")
+    public ResponseEntity<String> moveItem(@RequestBody MoveItemRequest request){
+        try{
+            return ResponseEntity.ok().body(String.valueOf(storageService.moveItem(request)));
         }catch(ItemNotFoundException | StorageNotFoundException e){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }

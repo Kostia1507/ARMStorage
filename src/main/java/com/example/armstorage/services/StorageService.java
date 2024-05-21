@@ -46,4 +46,6 @@ public interface StorageService {
             throws StorageNotFoundException, ItemNotFoundException;
 
     List<FoundItemResponse> foundAvailableItems(UserEntity user, ItemEntity item);
+
+    boolean moveItem(MoveItemRequest request) throws StorageNotFoundException, ItemNotFoundException;
 }

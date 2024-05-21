@@ -222,5 +222,53 @@ public class StorageServiceImpl implements StorageService {
         return items;
     }
 
+    @Override
+    public boolean moveItem(MoveItemRequest request) throws StorageNotFoundException, ItemNotFoundException {
+        StorageEntity storageToEntity = storageRepository.findById(request.getStorageToId()).orElseThrow(() ->
+                (new StorageNotFoundException("storage not found")));
+        StorageEntity storageFromEntity = storageRepository.findById(request.getStorageFromId()).orElseThrow(() ->
+                (new StorageNotFoundException("storage not found")));
+        ItemEntity itemEntity = itemRepository.findById(request.getItemId()).orElseThrow(() ->
+                (new ItemNotFoundException("item not found")));
+        ItemsInStorageEntity currentItemInCell = null;
+        List<ItemsInStorageEntity> itemsInStorage = storageFromEntity.getItemsInStorage();
+        for(ItemsInStorageEntity item : itemsInStorage){
+            if(item.getCell().equals(request.getCellFrom())){
+                currentItemInCell = item;
+            }
+        }
+        if((currentItemInCell == null) || (!currentItemInCell.getItem().getId().equals(request.getItemId())))
+            throw new ItemNotFoundException("Cell is empty");
+
+        ItemsInStorageEntity currentItemInCellTo = null;
+        List<ItemsInStorageEntity> itemsInStorageTo = storageToEntity.getItemsInStorage();
+        for(ItemsInStorageEntity item : itemsInStorageTo){
+            if(item.getCell().equals(request.getCellTo())){
+                currentItemInCellTo = item;
+            }
+        }
+        Long currentCount = 0L;
+        if(currentItemInCellTo != null){
+            if(currentItemInCellTo.getItem().getId().equals(request.getItemId())){
+                currentCount = currentItemInCellTo.getCount();
+            }else{
+                throw new ItemNotFoundException("Cell occupied with another item");
+            }
+        }
+        if(request.getCount() >= currentItemInCell.getCount()){
+            itemsInStorageRepository.delete(currentItemInCell);
+        }else{
+            currentItemInCell.setCount(currentItemInCell.getCount() - request.getCount());
+            itemsInStorageRepository.save(currentItemInCell);
+        }
+
+        ItemsInStorageEntity itemsInStorageEntity = ItemsInStorageEntity.builder()
+                .storage(storageToEntity)
+                .item(itemEntity)
+                .count(request.getCount()+currentCount)
+                .cell(request.getCellTo()).build();
+        itemsInStorageRepository.save(itemsInStorageEntity);
+        return true;
+    }
 
 }

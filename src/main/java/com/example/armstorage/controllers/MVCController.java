@@ -93,4 +93,10 @@ public class MVCController {
         return "giveitem";
     }
 
+    @GetMapping("/moveitem")
+    public String moveItemPage(Model model, HttpSession session){
+        model.addAttribute("token", session.getAttribute("token"));
+        return "moveitem";
+    }
+
 }
