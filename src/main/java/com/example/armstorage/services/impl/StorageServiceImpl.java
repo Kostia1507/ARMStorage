@@ -159,6 +159,7 @@ public class StorageServiceImpl implements StorageService {
         ItemsInStorageEntity itemsInStorageEntity = ItemsInStorageEntity.builder()
                 .storage(storageEntity)
                 .item(itemEntity)
+                .price(request.getPrice())
                 .count(request.getCount()+currentCount)
                 .cell(request.getCell()).build();
         itemsInStorageRepository.save(itemsInStorageEntity);
@@ -250,6 +251,9 @@ public class StorageServiceImpl implements StorageService {
         Long currentCount = 0L;
         if(currentItemInCellTo != null){
             if(currentItemInCellTo.getItem().getId().equals(request.getItemId())){
+                if(!Objects.equals(currentItemInCellTo.getPrice(), currentItemInCell.getPrice())){
+                    throw new ItemNotFoundException("Items have different price");
+                }
                 currentCount = currentItemInCellTo.getCount();
             }else{
                 throw new ItemNotFoundException("Cell occupied with another item");
@@ -265,6 +269,7 @@ public class StorageServiceImpl implements StorageService {
         ItemsInStorageEntity itemsInStorageEntity = ItemsInStorageEntity.builder()
                 .storage(storageToEntity)
                 .item(itemEntity)
+                .price(currentItemInCell.getPrice())
                 .count(request.getCount()+currentCount)
                 .cell(request.getCellTo()).build();
         itemsInStorageRepository.save(itemsInStorageEntity);

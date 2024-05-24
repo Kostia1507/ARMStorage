@@ -32,5 +32,8 @@ public class ItemsInStorageEntity {
 
     @Column(name = "cell")
     private Long cell;
+
+    @Column(name = "price")
+    private Double price;
 }
 

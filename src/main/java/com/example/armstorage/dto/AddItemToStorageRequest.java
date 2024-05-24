@@ -24,4 +24,6 @@ public class AddItemToStorageRequest {
     @NotNull
     private Long cell;
 
+    private Double price;
+
 }

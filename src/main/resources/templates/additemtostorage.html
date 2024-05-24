@@ -56,6 +56,7 @@
     <select name="select" id="select_item"></select>
     <input type="number" id="count" placeholder="Кількість">
     <input type="number" id="cell" placeholder="Комірка">
+    <input type="number" id="price" placeholder="Ціна за одиницю">
     <button onclick="addItem()">СТВОРИТИ</button>
 </div>
 
@@ -64,6 +65,7 @@
     const categorySelector = document.getElementById("select_category")
     const itemSelector = document.getElementById("select_item")
     const storageSelector = document.getElementById("select_storage")
+    const itemPrice = document.getElementById("price")
 
     const xhr = new XMLHttpRequest();
     xhr.open("GET", "/storage/category/all");
@@ -120,6 +122,21 @@
             }
         };
         xhrItem.send();
+    });
+
+    itemSelector.addEventListener("change", function() {
+        const selectedValue = itemSelector.value;
+        const xhrItemPrice = new XMLHttpRequest();
+        xhrItemPrice.open("GET", "/storage/item/"+selectedValue);
+        xhrItemPrice.setRequestHeader("Content-Type", "application/json");
+        xhrItemPrice.setRequestHeader("Authorization", `Bearer ${token}`);
+        xhrItemPrice.onreadystatechange = function () {
+            if (xhrItemPrice.readyState === 4 && xhrItemPrice.status === 200) {
+                const item = JSON.parse(xhrItemPrice.response);
+                itemPrice.value = item.price
+            }
+        };
+        xhrItemPrice.send();
     });
 
     function addItem(){
