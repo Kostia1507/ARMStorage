@@ -141,11 +141,22 @@ public class StorageController {
     public Set<ItemEntity> getAvailableItems(){
         try {
             UserEntity user = userService.findUserById(getUserDetails().getId());
-            return storageService.getAllAvailableItems(user);
+            return storageService.getAllAvailableItems(user, "");
         }catch(UserNotFoundException e){
             return null;
         }
     }
+
+    @GetMapping("/items/available/{loop}")
+    public Set<ItemEntity> getAvailableItems(@PathVariable String loop){
+        try {
+            UserEntity user = userService.findUserById(getUserDetails().getId());
+            return storageService.getAllAvailableItems(user, loop);
+        }catch(UserNotFoundException e){
+            return null;
+        }
+    }
+
 
     @GetMapping("/items/all/{id}")
     public List<ItemsInStorageEntity> getAllItemsInStorage(@PathVariable Long id){

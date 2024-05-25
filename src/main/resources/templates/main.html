@@ -128,6 +128,7 @@
                 <p class="fullname" th:text="|${session.fullname}|"></p>
                 <p class="fullname" th:text="|${session.roleLocale}|"></p>
             </div>
+            <input type="text" id="item-name" placeholder="Пошук предметів">
             <div id="categories-panel">
             </div>
         </div>
@@ -137,7 +138,6 @@
                 <button class="top-row-button" onclick="giveItem()">Видача товару</button>
                 <button class="top-row-button" onclick="moveItem()">Переміщення товару</button>
                 <button class="top-row-button" onclick="removeItem()">Списання товару</button>
-                <button class="top-row-button" onclick="checkItem()">Інвентаризація</button>
             </div>
             <div id="workspace">
             </div>
@@ -232,6 +232,78 @@
         };
         xhrItems.send();
 
+        const inputField = document.getElementById('item-name');
+
+        inputField.addEventListener('input', (event) => {
+            const value = event.target.value;
+            console.log('Пошук предмеду:', value);
+            const xhrSearch = new XMLHttpRequest();
+            if(value.length > 0) {
+                xhrSearch.open("GET", `/storage/items/available/${value}`);
+            }else{
+                xhrSearch.open("GET", `/storage/items/available`);
+            }
+            xhrSearch.setRequestHeader("Content-Type", "application/json");
+            xhrSearch.setRequestHeader("Authorization", `Bearer ${token}`);
+            xhrSearch.onreadystatechange = function () {
+                if (xhrSearch.readyState === 4) {
+                    if (xhrSearch.status === 200) {
+                        let searchItems = JSON.parse(xhrSearch.response)
+                        console.log(searchItems)
+                        const groupedItems = searchItems.reduce((acc, currentValue) => {
+                            if (acc[currentValue.category.id]) {
+                                acc[currentValue.category.id].push(currentValue);
+                            } else {
+                                acc[currentValue.category.id] = [currentValue];
+                            }
+                            return acc;
+                        }, {});
+                        const categoryIdToNameMap = {};
+                        searchItems.forEach(item => {
+                            categoryIdToNameMap[item.category.id] = item.category.name;
+                        });
+                        let leftContainer = document.getElementById("categories-panel")
+                        while (leftContainer.firstChild) {
+                            leftContainer.removeChild(leftContainer.lastChild);
+                        }
+                        console.log(groupedItems)
+                        for (let categoryId in groupedItems) {
+                            if (groupedItems.hasOwnProperty(categoryId)) {
+                                let categoryItems = groupedItems[categoryId];
+                                let toggleButton = document.createElement("button");
+                                toggleButton.textContent = categoryIdToNameMap[categoryId] + "▼"
+                                toggleButton.setAttribute("divId", categoryId)
+                                toggleButton.className = "toggle-button"
+                                toggleButton.onclick = toggleTab
+                                leftContainer.appendChild(toggleButton)
+                                let itemsDiv = document.createElement("div");
+                                itemsDiv.id = categoryId
+                                itemsDiv.className = "category"
+                                categoryItems.forEach(function (item) {
+                                    let itemText = document.createElement("p");
+                                    itemText.textContent=item.name
+                                    itemText.className="item-name"
+                                    itemsDiv.appendChild(itemText)
+                                    let itemBtn = document.createElement("button");
+                                    itemBtn.textContent = "Пошук"
+                                    itemBtn.setAttribute("itemId", item.id)
+                                    itemBtn.className = "search-button"
+                                    itemBtn.onclick = findItem
+                                    itemsDiv.appendChild(itemBtn)
+                                    let hrItem = document.createElement("hr");
+                                    itemsDiv.appendChild(hrItem)
+                                })
+                                leftContainer.appendChild(itemsDiv)
+                                let hr = document.createElement("hr");
+                                leftContainer.appendChild(hr)
+                            }
+                        }
+                    }
+                }
+            };
+            xhrSearch.send();
+        });
+
         function addItem(){
             window.location.href = "/additem";
         }
@@ -246,10 +318,6 @@
 
         function removeItem(){
             window.location.href = "/removeitem";
-        }
-
-        function checkItem(){
-
         }
 
         function toggleTab(){
@@ -287,11 +355,13 @@
 
                             foundItem.sort((a, b) => a.count - b.count);
                             foundItem.forEach(function(itemInStorage){
+                                console.log(itemInStorage)
                                 let hr = document.createElement("hr");
                                 workSpace.appendChild(hr)
                                 let itemOutput = document.createElement("p");
                                 itemOutput.textContent = `На складі ${itemInStorage.storageEntity.name} в комірці
-                                 ${itemInStorage.cell} є ${itemInStorage.count} ${itemInStorage.item.measurement}`
+                                 ${itemInStorage.cell} є ${itemInStorage.count} ${itemInStorage.item.measurement}.
+                                  Ціна за одиницю: ${itemInStorage.price}`
                                 workSpace.appendChild(itemOutput)
                             })
                         }else{

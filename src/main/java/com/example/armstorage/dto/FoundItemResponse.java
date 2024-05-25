@@ -12,6 +12,7 @@ public class FoundItemResponse {
 
     private Long cell;
     private Long count;
+    private Double price;
     private ItemEntity item;
     private StorageEntity storageEntity;
 }

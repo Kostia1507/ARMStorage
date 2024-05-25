@@ -167,11 +167,13 @@ public class StorageServiceImpl implements StorageService {
     }
 
     @Override
-    public Set<ItemEntity> getAllAvailableItems(UserEntity user){
+    public Set<ItemEntity> getAllAvailableItems(UserEntity user, String query){
         Set<ItemEntity> items = new HashSet<>();
         for(StorageEntity storageEntity : user.getStorages()){
             for(ItemsInStorageEntity item : storageEntity.getItemsInStorage()){
-                items.add(item.getItem());
+                if(item.getItem().getName().contains(query)) {
+                    items.add(item.getItem());
+                }
             }
         }
         return items;
@@ -214,6 +216,7 @@ public class StorageServiceImpl implements StorageService {
             if(userStorages.contains(itemsInStorage.getStorage())){
                 items.add(FoundItemResponse.builder()
                         .item(item)
+                        .price(itemsInStorage.getPrice())
                         .storageEntity(itemsInStorage.getStorage())
                         .cell(itemsInStorage.getCell())
                         .count(itemsInStorage.getCount())

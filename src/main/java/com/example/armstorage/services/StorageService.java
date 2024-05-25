@@ -40,7 +40,7 @@ public interface StorageService {
     boolean addItemToStorage(AddItemToStorageRequest request)
             throws StorageNotFoundException, ItemNotFoundException;
 
-    Set<ItemEntity> getAllAvailableItems(UserEntity user);
+    Set<ItemEntity> getAllAvailableItems(UserEntity user, String query);
 
     boolean removeItemToStorage(AddItemToStorageRequest request, int action)
             throws StorageNotFoundException, ItemNotFoundException;

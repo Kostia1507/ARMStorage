@@ -30,6 +30,7 @@ public class ItemsInStorageEntity {
     @Column(name = "count")
     private Long count;
 
+    @Id
     @Column(name = "cell")
     private Long cell;
 

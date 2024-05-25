@@ -13,6 +13,7 @@ public class ItemsInStorageEntityId implements Serializable {
 
     private ItemEntity item;
     private StorageEntity storage;
+    private Long cell;
 
     @Override
     public boolean equals(Object o) {
