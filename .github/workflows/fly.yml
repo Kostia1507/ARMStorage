@@ -9,8 +9,9 @@ jobs:
   deploy:
     name: Deploy app
     runs-on: ubuntu-latest
+    concurrency: deploy-group
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: superfly/flyctl-actions/setup-flyctl@master
       - run: flyctl deploy --remote-only
       - run: flyctl scale count 1
